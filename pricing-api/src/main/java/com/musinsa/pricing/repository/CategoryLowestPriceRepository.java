@@ -1,7 +1,7 @@
 package com.musinsa.pricing.repository;
 
 import com.musinsa.pricing.domain.CategoryLowestPrice;
-import com.musinsa.pricing.domain.projection.LowestPricePerCategoryProjection;
+import com.musinsa.pricing.domain.projection.LowestPriceProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -23,5 +23,5 @@ public interface CategoryLowestPriceRepository extends JpaRepository<CategoryLow
             "JOIN brand b ON p.brand_id = b.id " +
             "JOIN category c ON c.id = clp.category_id ",
             nativeQuery = true)
-    List<LowestPricePerCategoryProjection> findLowestPriceByCategory();
+    List<LowestPriceProjection> findLowestPriceByCategory();
 }

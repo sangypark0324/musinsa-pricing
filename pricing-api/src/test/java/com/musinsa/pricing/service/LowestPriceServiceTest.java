@@ -1,7 +1,6 @@
 package com.musinsa.pricing.service;
 
-import com.musinsa.pricing.domain.projection.LowestPricePerCategoryProjection;
-import com.musinsa.pricing.model.response.LowestPriceDto;
+import com.musinsa.pricing.domain.projection.LowestPriceProjection;
 import com.musinsa.pricing.model.response.LowestPricePerCategoryResult;
 import com.musinsa.pricing.repository.CategoryLowestPriceRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,17 +32,17 @@ class LowestPriceServiceTest {
     @Test
     public void 카테고리별_최저가_브랜드를_조회하면_각_카테고리의_최저가_브랜드상품의_총액을_구한다() {
         // given
-        LowestPricePerCategoryProjection projection1 = mock(LowestPricePerCategoryProjection.class);
+        LowestPriceProjection projection1 = mock(LowestPriceProjection.class);
         when(projection1.getCategoryName()).thenReturn("상의");
         when(projection1.getBrandName()).thenReturn("C");
         when(projection1.getLowestPrice()).thenReturn(new BigDecimal("10000"));
 
-        LowestPricePerCategoryProjection projection2 = mock(LowestPricePerCategoryProjection.class);
+        LowestPriceProjection projection2 = mock(LowestPriceProjection.class);
         when(projection2.getCategoryName()).thenReturn("아우터");
         when(projection2.getBrandName()).thenReturn("E");
         when(projection2.getLowestPrice()).thenReturn(new BigDecimal("5000"));
 
-        List<LowestPricePerCategoryProjection> projections = Arrays.asList(projection1, projection2);
+        List<LowestPriceProjection> projections = Arrays.asList(projection1, projection2);
         when(categoryLowestPriceRepository.findLowestPriceByCategory()).thenReturn(projections);
 
         // when

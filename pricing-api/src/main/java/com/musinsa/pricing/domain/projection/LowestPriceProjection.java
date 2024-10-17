@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Getter
 @AllArgsConstructor
-public class LowestPricePerCategoryProjection {
+public class LowestPriceProjection {
     private Long categoryId;
     private String categoryName;
     private Long brandId;
