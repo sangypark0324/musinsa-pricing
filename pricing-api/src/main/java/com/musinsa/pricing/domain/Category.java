@@ -17,7 +17,7 @@ public class Category extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true,name = "name")
     private String name;  // 카테고리 이름
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)

@@ -10,4 +10,6 @@ public class PricingApplication {
 		SpringApplication.run(PricingApplication.class, args);
 	}
 
+
+
 }
