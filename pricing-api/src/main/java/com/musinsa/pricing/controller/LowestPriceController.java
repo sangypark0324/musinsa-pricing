@@ -1,5 +1,6 @@
 package com.musinsa.pricing.controller;
 
+import com.musinsa.pricing.model.response.LowestBrandResult;
 import com.musinsa.pricing.model.response.LowestPricePerCategoryResult;
 import com.musinsa.pricing.service.LowestPriceService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,12 @@ public class LowestPriceController {
     @GetMapping("/lowest-price/categories")
     public ResponseEntity<LowestPricePerCategoryResult> getLowestPricePerCategory() {
         LowestPricePerCategoryResult result =  lowestPriceService.findLowestPriceProductByAllCategories();
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/lowest-price/brand")
+    public ResponseEntity<LowestBrandResult> getLowestPricePerBrand() {
+        LowestBrandResult result =  lowestPriceService.getBrandWithLowestTotalPrice();
         return ResponseEntity.ok(result);
     }
 }

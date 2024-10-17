@@ -5,11 +5,9 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 
-public interface LowestPriceProjection {
-    Long getCategoryId();
-    String getCategoryName();
+
+public interface BrandTotalLowestPriceProjection {
     Long getBrandId();
     String getBrandName();
-    Long getProductId();
-    BigDecimal getLowestPrice();
+    BigDecimal getTotalLowestPrice();
 }

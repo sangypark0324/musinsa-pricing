@@ -1,5 +1,6 @@
 package com.musinsa.pricing.model.response;
 
+import com.musinsa.pricing.model.response.dto.LowestPriceDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

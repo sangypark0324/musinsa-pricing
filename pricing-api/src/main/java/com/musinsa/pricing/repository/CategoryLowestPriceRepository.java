@@ -1,6 +1,7 @@
 package com.musinsa.pricing.repository;
 
 import com.musinsa.pricing.domain.CategoryLowestPrice;
+import com.musinsa.pricing.domain.projection.LowestPriceProductionProjection;
 import com.musinsa.pricing.domain.projection.LowestPriceProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
