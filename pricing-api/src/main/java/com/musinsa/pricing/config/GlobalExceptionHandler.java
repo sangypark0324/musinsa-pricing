@@ -2,7 +2,7 @@ package com.musinsa.pricing.config;
 
 import com.musinsa.pricing.exception.BusinessRuleException;
 import com.musinsa.pricing.exception.ErrorType;
-import com.musinsa.pricing.model.response.ErrorResponse;
+import com.musinsa.pricing.controller.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

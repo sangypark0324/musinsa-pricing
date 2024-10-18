@@ -5,10 +5,10 @@ spring:
     console:
       enabled: true
   datasource:
-    url: jdbc:h2:mem:itemdb
+    url: jdbc:h2:mem:itemdb;
     driver-class-name: org.h2.Driver
     username: sa
     password:
   jpa:
     hibernate:
-      ddl-auto: create # TODO 추후 옵션 변경
+      ddl-auto: create-drop

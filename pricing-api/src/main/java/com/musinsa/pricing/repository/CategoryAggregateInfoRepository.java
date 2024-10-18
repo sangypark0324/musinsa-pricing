@@ -21,8 +21,8 @@ public interface CategoryAggregateInfoRepository extends JpaRepository<CategoryA
             "       b.name AS brandName, " +
             "       p.id as productId, " +
             "       clp.lowest_price AS lowestPrice " +
-            "FROM category_lowest_price clp " +
-            "JOIN product p ON clp.product_id = p.id " +
+            "FROM category_aggregate_info clp " +
+            "JOIN product p ON clp.lowest_price_product_id = p.id " +
             "JOIN brand b ON p.brand_id = b.id " +
             "JOIN category c ON c.id = clp.category_id ",
             nativeQuery = true)

@@ -1,13 +1,16 @@
-package com.musinsa.pricing.model.response;
+package com.musinsa.pricing.controller.response;
 
-import com.musinsa.pricing.model.response.dto.BrandDto;
+import com.musinsa.pricing.controller.response.dto.BrandDto;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "브랜드 수정 결과")
 public class BrandCommandResult {
+
+    @Schema(description = "수정결과")
     private String message;
 
     public static BrandCommandResult buildResult(BrandDto brandDto) {

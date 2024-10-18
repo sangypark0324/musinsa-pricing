@@ -4,11 +4,11 @@ import com.musinsa.pricing.exception.BusinessRuleException;
 import com.musinsa.pricing.exception.ErrorType;
 import com.musinsa.pricing.domain.Brand;
 import com.musinsa.pricing.domain.Category;
-import com.musinsa.pricing.model.response.dto.BrandDto;
+import com.musinsa.pricing.controller.response.dto.BrandDto;
 import com.musinsa.pricing.repository.BrandRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -42,6 +42,12 @@ public class BrandService {
                 .orElseThrow(() -> new BusinessRuleException("존재하지 않는 브랜드 입니다.", ErrorType.NO_RESOURCE));
         brandRepository.delete(brand);
         return brandDto;
+    }
+
+    @Transactional(readOnly = true)
+    public Brand getBrand(long brandId) {
+        return brandRepository.findById(brandId)
+                .orElseThrow(() -> new BusinessRuleException("존재하지 않는 브랜드 입니다.", ErrorType.NO_RESOURCE));
     }
 
     private BrandDto convertToDto(Brand brand) {

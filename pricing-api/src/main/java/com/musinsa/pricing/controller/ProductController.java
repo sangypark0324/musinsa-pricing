@@ -1,9 +1,11 @@
 package com.musinsa.pricing.controller;
 
+import com.musinsa.pricing.controller.request.SetProductRequest;
 import com.musinsa.pricing.controller.response.BrandCommandResult;
 import com.musinsa.pricing.controller.response.ErrorResponse;
+import com.musinsa.pricing.controller.response.SetProductResult;
 import com.musinsa.pricing.controller.response.dto.BrandDto;
-import com.musinsa.pricing.service.BrandService;
+import com.musinsa.pricing.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,53 +13,48 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/brands")
+@RestController("/api/products")
 @RequiredArgsConstructor
-@Tag(name = "brand", description = "brand api")
-public class BrandController {
+@Tag(name = "product", description = "product api")
+public class ProductController {
+    private final ProductService productService;
 
-    private final BrandService brandService;
-
-    @Operation(summary = "브랜드 등록 API", description = "브랜드 등록 ", tags = {"brand"})
+    @Operation(summary = "상품 등록 API", description = "상품 등록 ", tags = {"product"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = BrandCommandResult.class))),
             @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))}
     )
     @PostMapping
-    public ResponseEntity<BrandCommandResult> addBrand(@RequestBody BrandDto brandDto) {
-        BrandDto createdBrand = brandService.addBrand(brandDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(BrandCommandResult.buildResult(brandDto));
+    public ResponseEntity<SetProductResult> addProduct(@RequestBody SetProductRequest setProductRequest) {
+        long productId = productService.addProduct(setProductRequest);
+        return ResponseEntity.ok(new SetProductResult("상품 등록 완료",productId));
     }
 
-
-    @Operation(summary = "브랜드 수정 API", description = "브랜드 수정 ", tags = {"brand"})
+    @Operation(summary = "상품 수정 API", description = "상품 수정 ", tags = {"product"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = BrandCommandResult.class))),
             @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))}
     )
     @PutMapping("/{id}")
-    public ResponseEntity<BrandCommandResult> updateBrand(@PathVariable long id,  @RequestBody BrandDto brandDto) {
-        BrandDto updatedBrand = brandService.updateBrand(id, brandDto);
-        return ResponseEntity.ok(BrandCommandResult.buildResult(brandDto));
+    public ResponseEntity<SetProductResult> updateProduct(@PathVariable long id, @RequestBody SetProductRequest setProductRequest) {
+        long productId = productService.updateProduct(id,setProductRequest);
+        return ResponseEntity.ok(new SetProductResult("상품 수정 성공",productId));
     }
 
-
-    @Operation(summary = "브랜드 삭제 API", description = "브랜드 삭제 ", tags = {"brand"})
+    @Operation(summary = "상품 삭제 API", description = "상품 삭제 ", tags = {"product"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = BrandCommandResult.class))),
             @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))}
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<BrandCommandResult> deleteBrand(@PathVariable long id) {
-        brandService.deleteBrand(new BrandDto(id));
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SetProductResult> deleteProduct(@PathVariable long id) {
+        long productId = productService.deleteProduct(id);
+        return ResponseEntity.ok(new SetProductResult("상품 삭제 성공",productId));
     }
 }

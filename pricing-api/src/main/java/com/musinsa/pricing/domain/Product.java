@@ -3,6 +3,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 
@@ -10,6 +12,8 @@ import java.math.BigDecimal;
 @Table(name = "product")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE product SET deleted = true WHERE id = ?")
+@SQLRestriction( "deleted = false")
 public class Product extends BaseEntity{
 
     @Id
@@ -33,5 +37,21 @@ public class Product extends BaseEntity{
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ProductStatus status;
+
+    public Product (String name,BigDecimal price, Brand brand, Category category, ProductStatus status) {
+        this.name = name;
+        this.price = price;
+        this.brand = brand;
+        this.category = category;
+        this.status = status;
+    }
+
+    public void updateProduct(String name,BigDecimal price, Brand brand, Category category, ProductStatus status) {
+        this.name = name;
+        this.price = price;
+        this.brand = brand;
+        this.category = category;
+        this.status = status;
+    }
 }
 
