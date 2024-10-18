@@ -1,11 +1,14 @@
 package com.musinsa.pricing.service;
 
 import com.musinsa.pricing.domain.projection.BrandTotalLowestPriceProjection;
+import com.musinsa.pricing.domain.projection.CategoryAggregateInfoProjection;
 import com.musinsa.pricing.domain.projection.LowestPriceProjection;
+import com.musinsa.pricing.exception.BusinessRuleException;
+import com.musinsa.pricing.model.response.CategoryAggregateInfoResult;
 import com.musinsa.pricing.model.response.LowestBrandResult;
 import com.musinsa.pricing.model.response.LowestPricePerCategoryResult;
 import com.musinsa.pricing.repository.BrandRepository;
-import com.musinsa.pricing.repository.CategoryLowestPriceRepository;
+import com.musinsa.pricing.repository.CategoryAggregateInfoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -22,7 +26,7 @@ import static org.mockito.Mockito.when;
 
 class LowestPriceServiceTest {
     @Mock
-    private CategoryLowestPriceRepository categoryLowestPriceRepository;
+    private CategoryAggregateInfoRepository categoryAggregateInfoRepository;
 
     @Mock
     private BrandRepository brandRepository;
@@ -49,7 +53,7 @@ class LowestPriceServiceTest {
         when(projection2.getLowestPrice()).thenReturn(new BigDecimal("5000"));
 
         List<LowestPriceProjection> projections = Arrays.asList(projection1, projection2);
-        when(categoryLowestPriceRepository.findLowestPriceByCategory()).thenReturn(projections);
+        when(categoryAggregateInfoRepository.findLowestPriceByCategory()).thenReturn(projections);
 
         // when
         LowestPricePerCategoryResult result = lowestPriceService.findLowestPriceProductByAllCategories();
@@ -90,5 +94,42 @@ class LowestPriceServiceTest {
         // Then: Verify the result
         assertEquals(BRAND_NAME, result.getLowestPriceBrandInfo().getBrandName());
         assertEquals(BigDecimal.valueOf(10000), result.getLowestPriceBrandInfo().getTotalPrice());
+    }
+
+    @Test
+    void 존재하는_카테고리로_검색하면_해당_카테고리의_최저가와_최고가_브랜드정보를_조회한다() {
+        // Given
+        final String validCategoryName = "상의";
+        CategoryAggregateInfoProjection mockProjection = mock(CategoryAggregateInfoProjection.class);
+        when(mockProjection.getCategoryName()).thenReturn(validCategoryName);
+        when(mockProjection.getLowestPrice()).thenReturn(BigDecimal.valueOf(10000));
+        when(mockProjection.getLowestPriceBrand()).thenReturn("C");
+        when(mockProjection.getHighestPrice()).thenReturn(BigDecimal.valueOf(11400));
+        when(mockProjection.getHighestPriceBrand()).thenReturn("I");
+        when(categoryAggregateInfoRepository.findCategoryAggregateInfoByCategoryName(validCategoryName))
+                .thenReturn(Optional.of(mockProjection));
+
+        // When
+        CategoryAggregateInfoResult result = lowestPriceService.getLowestAndHighestPriceInfoByCategoryName(validCategoryName);
+
+        // Then
+        assertEquals(validCategoryName, result.getCategoryName());
+        assertEquals("C", result.getHighestPriceProducts().stream().findFirst().get().getBrandName());
+        assertEquals(BigDecimal.valueOf(10000), result.getHighestPriceProducts().get(0).getPrice());
+        assertEquals("I", result.getLowestPriceProducts().stream().findFirst().get().getBrandName());
+        assertEquals(BigDecimal.valueOf(11400), result.getLowestPriceProducts().get(0).getPrice());
+    }
+
+    @Test
+    void 존재하지_않는_카테고리를_검색하면_throw_BusinessRuleException() {
+        // Given
+        final String invalidCategoryName = "여성상의";
+        when(categoryAggregateInfoRepository.findCategoryAggregateInfoByCategoryName(invalidCategoryName))
+                .thenReturn(Optional.empty());
+
+        // When & Then
+        BusinessRuleException thrown = assertThrows(BusinessRuleException.class, () ->
+                lowestPriceService.getLowestAndHighestPriceInfoByCategoryName(invalidCategoryName));
+        assertEquals("존재하지 않는 카테고리 입니다.", thrown.getMessage());
     }
 }
