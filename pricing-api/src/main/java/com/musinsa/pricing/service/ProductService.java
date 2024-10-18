@@ -1,16 +1,17 @@
 package com.musinsa.pricing.service;
 
 import com.musinsa.pricing.controller.request.SetProductRequest;
-import com.musinsa.pricing.domain.Brand;
-import com.musinsa.pricing.domain.Category;
-import com.musinsa.pricing.domain.Product;
-import com.musinsa.pricing.domain.ProductStatus;
+import com.musinsa.pricing.domain.*;
+import com.musinsa.pricing.domain.event.UpdatePriceEvent;
 import com.musinsa.pricing.exception.BusinessRuleException;
 import com.musinsa.pricing.exception.ErrorType;
 import com.musinsa.pricing.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final BrandService brandService;
     private final CategoryService categoryService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public long addProduct(SetProductRequest setProductRequest) {
@@ -27,6 +29,7 @@ public class ProductService {
         ProductStatus productStatus = ProductStatus.valueOf(setProductRequest.getStatus().toUpperCase());
         Product product = new Product(setProductRequest.getName(), setProductRequest.getPrice(),brand,category,productStatus);
         Product savedProduct = productRepository.save(product);
+        publishEvent(savedProduct.getId(),savedProduct.getCategory().getId(),savedProduct.getPrice());
         return savedProduct.getId();
     }
 
@@ -39,6 +42,7 @@ public class ProductService {
         ProductStatus productStatus = ProductStatus.valueOf(setProductRequest.getStatus().toUpperCase());
         product.updateProduct(setProductRequest.getName(), setProductRequest.getPrice(),brand,category,productStatus);
         Product savedProduct = productRepository.save(product);
+        publishEvent(savedProduct.getId(),savedProduct.getCategory().getId(),savedProduct.getPrice());
         return savedProduct.getId();
     }
 
@@ -51,5 +55,8 @@ public class ProductService {
         return productId;
     }
 
+    private void publishEvent(long productId,long categoryId, BigDecimal price) {
+        eventPublisher.publishEvent(new UpdatePriceEvent(productId,categoryId,price));
+    }
 }
 

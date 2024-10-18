@@ -10,7 +10,7 @@ import org.hibernate.annotations.SQLRestriction;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "product")
+@Table(name = "product",indexes = @Index(name = "IDX_PRODUCT_01",columnList = "price,id"))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE product SET deleted = true WHERE id = ?")
