@@ -1,17 +1,25 @@
 package com.musinsa.pricing.domain;
+
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "brand")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@SQLDelete(sql = "UPDATE brand SET deleted = true WHERE id = ?")
+@SQLRestriction( "deleted = false")
 public class Brand extends BaseEntity{
 
     @Id
@@ -23,6 +31,20 @@ public class Brand extends BaseEntity{
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
     private Set<BrandCategory> categories = new HashSet<>();
+
+    @Column
+    private boolean deleted = Boolean.FALSE; // 삭제 여부 기본값 false
+
+    public Brand(String name, List<Category> categories) {
+        this.name = name;
+        this.categories = categories.stream()
+                .map(it -> new BrandCategory(this,it))
+                .collect(Collectors.toSet());
+    }
+
+    public void updateBrandName(String brandName) {
+        this.name = brandName;
+    }
 
 }
 

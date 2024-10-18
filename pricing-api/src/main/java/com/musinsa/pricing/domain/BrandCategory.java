@@ -11,6 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BrandCategory extends BaseEntity{
 
+    public BrandCategory(Brand brand, Category category) {
+        this.brand = brand;
+        this.category = category;
+    }
+
     @EmbeddedId
     private BrandCategoryId id;
 
