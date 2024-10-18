@@ -1,9 +1,9 @@
 package com.musinsa.pricing.service;
 
+import com.musinsa.pricing.exception.BusinessRuleException;
 import com.musinsa.pricing.domain.projection.BrandTotalLowestPriceProjection;
 import com.musinsa.pricing.domain.projection.CategoryAggregateInfoProjection;
 import com.musinsa.pricing.domain.projection.LowestPriceProjection;
-import com.musinsa.pricing.exception.BusinessRuleException;
 import com.musinsa.pricing.model.response.CategoryAggregateInfoResult;
 import com.musinsa.pricing.model.response.LowestBrandResult;
 import com.musinsa.pricing.model.response.LowestPricePerCategoryResult;
