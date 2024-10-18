@@ -1,5 +1,6 @@
 package com.musinsa.pricing.controller;
 
+import com.musinsa.pricing.controller.response.ApiResponseWrapper;
 import com.musinsa.pricing.controller.response.BrandCommandResult;
 import com.musinsa.pricing.controller.response.ErrorResponse;
 import com.musinsa.pricing.controller.response.dto.BrandDto;
@@ -25,14 +26,17 @@ public class BrandController {
 
     @Operation(summary = "브랜드 등록 API", description = "브랜드 등록 ", tags = {"brand"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = BrandCommandResult.class))),
+            @ApiResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = BrandCommandResult.class))),
             @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))}
     )
     @PostMapping
-    public ResponseEntity<BrandCommandResult> addBrand(@RequestBody BrandDto brandDto) {
-        BrandDto createdBrand = brandService.addBrand(brandDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(BrandCommandResult.buildResult(brandDto));
+    public ResponseEntity<ApiResponseWrapper<BrandCommandResult>> addBrand(@RequestBody BrandDto brandDto) {
+        long createdBrandId = brandService.addBrand(brandDto);
+        ApiResponseWrapper<BrandCommandResult> apiResponseWrapper = new ApiResponseWrapper<BrandCommandResult>()
+                .buildSuccessResponse(BrandCommandResult.buildResult(createdBrandId));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(apiResponseWrapper);
     }
 
 
@@ -43,9 +47,11 @@ public class BrandController {
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))}
     )
     @PutMapping("/{id}")
-    public ResponseEntity<BrandCommandResult> updateBrand(@PathVariable long id,  @RequestBody BrandDto brandDto) {
-        BrandDto updatedBrand = brandService.updateBrand(id, brandDto);
-        return ResponseEntity.ok(BrandCommandResult.buildResult(brandDto));
+    public ResponseEntity<ApiResponseWrapper<BrandCommandResult>> updateBrand(@PathVariable long id,  @RequestBody BrandDto brandDto) {
+        long updatedBrandId = brandService.updateBrand(id, brandDto);
+        ApiResponseWrapper<BrandCommandResult> apiResponseWrapper = new ApiResponseWrapper<BrandCommandResult>()
+                .buildSuccessResponse(BrandCommandResult.buildResult(updatedBrandId));
+        return ResponseEntity.ok(apiResponseWrapper);
     }
 
 
@@ -56,8 +62,10 @@ public class BrandController {
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))}
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<BrandCommandResult> deleteBrand(@PathVariable long id) {
-        brandService.deleteBrand(new BrandDto(id));
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ApiResponseWrapper<BrandCommandResult>> deleteBrand(@PathVariable long id) {
+        var deletedBrandId = brandService.deleteBrand(id);
+        ApiResponseWrapper<BrandCommandResult> apiResponseWrapper = new ApiResponseWrapper<BrandCommandResult>()
+                .buildSuccessResponse(BrandCommandResult.buildResult(deletedBrandId));
+        return ResponseEntity.ok(apiResponseWrapper);
     }
 }
