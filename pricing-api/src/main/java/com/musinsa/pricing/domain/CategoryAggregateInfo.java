@@ -31,5 +31,37 @@ public class CategoryAggregateInfo extends BaseEntity {
     @Column(nullable = false, name = "highest_price")
     private BigDecimal highestPrice;
 
+    public void updatePriceInfo(BigDecimal price,Product product) {
+        if(isLowestPrice(price)) {
+            this.lowestPrice = price;
+            this.lowestPriceProduct = product;
+        }
+        if(isHighestPrice(price)) {
+            this.highestPrice = price;
+            this.highestPriceProduct = product;
+        }
+    }
+
+    public boolean hasDeleteProductInfo(long productId) {
+        if(lowestPriceProduct.getId() == productId || highestPriceProduct.getId() == productId) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isLowestPrice(BigDecimal price) {
+        if(price.compareTo(lowestPrice) < 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isHighestPrice(BigDecimal price) {
+        if(price.compareTo(highestPrice) > 0) {
+            return true;
+        }
+        return false;
+    }
+
 }
 

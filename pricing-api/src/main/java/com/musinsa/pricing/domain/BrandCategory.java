@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "brand_category")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BrandCategory extends BaseEntity{
 
@@ -17,7 +19,7 @@ public class BrandCategory extends BaseEntity{
     }
 
     @EmbeddedId
-    private BrandCategoryId id;
+    private BrandCategoryId id = new BrandCategoryId();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("brandId")

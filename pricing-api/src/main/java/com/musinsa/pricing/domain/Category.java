@@ -20,7 +20,7 @@ public class Category extends BaseEntity{
     @Column(nullable = false, unique = true,name = "name")
     private String name;  // 카테고리 이름
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category")
     private Set<BrandCategory> brands = new HashSet<>();
 }
 

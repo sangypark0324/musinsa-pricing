@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -29,10 +30,11 @@ public class Brand extends BaseEntity{
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "brand")
     private Set<BrandCategory> categories = new HashSet<>();
 
     @Column
+    @ColumnDefault(value = "0")
     private boolean deleted = Boolean.FALSE; // 삭제 여부 기본값 false
 
     public Brand(String name, List<Category> categories) {
@@ -40,6 +42,7 @@ public class Brand extends BaseEntity{
         this.categories = categories.stream()
                 .map(it -> new BrandCategory(this,it))
                 .collect(Collectors.toSet());
+        this.updateCreatedDateAndCreatedBy();
     }
 
     public void updateBrandName(String brandName) {

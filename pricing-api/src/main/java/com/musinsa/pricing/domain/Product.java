@@ -3,13 +3,18 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "product")
+@Table(name = "product",indexes = @Index(name = "IDX_PRODUCT_01",columnList = "price,id"))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE product SET deleted = true WHERE id = ?")
+@SQLRestriction( "deleted = false")
 public class Product extends BaseEntity{
 
     @Id
@@ -33,5 +38,27 @@ public class Product extends BaseEntity{
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ProductStatus status;
+
+    @Column
+    @ColumnDefault(value = "0")
+    private boolean deleted = Boolean.FALSE; // 삭제 여부 기본값 false
+
+    public Product (String name,BigDecimal price, Brand brand, Category category, ProductStatus status) {
+        this.name = name;
+        this.price = price;
+        this.brand = brand;
+        this.category = category;
+        this.status = status;
+        this.updateCreatedDateAndCreatedBy();
+    }
+
+    public void updateProduct(String name,BigDecimal price, Brand brand, Category category, ProductStatus status) {
+        this.name = name;
+        this.price = price;
+        this.brand = brand;
+        this.category = category;
+        this.status = status;
+        this.updateCreatedDateAndCreatedBy();
+    }
 }
 
